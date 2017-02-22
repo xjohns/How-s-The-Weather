@@ -17,11 +17,11 @@ public class Utility {
      * 解析和处理服务器返回的省级数据
      */
     public synchronized static boolean handleProvinceResponse(WeatherDB weatherDB, String response){
-        if (!TextUtils.isEmpty(response)){
+        if (!TextUtils.isEmpty(response)){//判断response字符串是否不为null，且长度不为0.
             String[] allProvinces = response.split(",");
             if (allProvinces != null && allProvinces.length > 0 ){
                 for (String p : allProvinces){
-                    String[] array = response.split("\\|");
+                    String[] array = p.split("\\|");
                     Province province = new Province();
                     province.setProvinceCode(array[0]);
                     province.setProvinceName(array[1]);
@@ -42,7 +42,7 @@ public class Utility {
             String[] allCities = response.split(",");
             if (allCities != null && allCities.length > 0 ){
                 for (String c : allCities){
-                    String[] array = response.split("\\|");
+                    String[] array = c.split("\\|");
                     City city = new City();
                     city.setCityCode(array[0]);
                     city.setCityName(array[1]);
@@ -64,7 +64,7 @@ public class Utility {
             String[] allCounties = response.split(",");
             if (allCounties != null && allCounties.length > 0 ){
                 for (String c : allCounties){
-                    String[] array = response.split("\\|");
+                    String[] array = c.split("\\|");
                     County county = new County();
                     county.setCountyCode(array[0]);
                     county.setCountyName(array[1]);
