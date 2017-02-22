@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  * Created by xiong on 2017/2/22.
+ * 数据库建表。
  */
 
 public class WeatherOpenHelper extends SQLiteOpenHelper {

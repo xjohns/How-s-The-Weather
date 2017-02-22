@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * Created by xiong on 2017/2/22.
+ * 把一些常用的数据库操作封装起来。
  */
 
 public class WeatherDB {
