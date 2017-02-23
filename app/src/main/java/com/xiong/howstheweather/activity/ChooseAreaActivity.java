@@ -2,7 +2,10 @@ package com.xiong.howstheweather.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -65,6 +68,13 @@ public class ChooseAreaActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.getBoolean("city_selected", false)) {
+            Intent intent = new Intent(this, WeatherActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
         setContentView(R.layout.choose_area);
         listView = (ListView) findViewById(R.id.listView);
         titleText = (TextView) findViewById(R.id.tV_title);
@@ -81,6 +91,12 @@ public class ChooseAreaActivity extends Activity {
                 } else if (currentLevel == LEVEL_CITY){
                     selectedCity = cityList.get(position);
                     queryCounties();
+                } else if (currentLevel == LEVEL_COUNTY){
+                    String countyCode = countyList.get(position).getCountyCode();
+                    Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
+                    intent.putExtra("county_code", countyCode);
+                    startActivity(intent);
+                    finish();
                 }
             }
         });
@@ -102,9 +118,7 @@ public class ChooseAreaActivity extends Activity {
             listView.setSelection(0);
             titleText.setText("中国");
             currentLevel = LEVEL_PROVINCE;
-            Toast.makeText(ChooseAreaActivity.this, "数据库里的数据", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(ChooseAreaActivity.this, "服务器上的数据", Toast.LENGTH_SHORT).show();
             queryFromServer(null, "province");
         }
     }
