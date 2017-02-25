@@ -1,5 +1,7 @@
 package com.xiong.howstheweather.util;
 
+import java.io.InputStream;
+
 /**
  * Created by xiong on 2017/2/22.
  * 定义一个接口

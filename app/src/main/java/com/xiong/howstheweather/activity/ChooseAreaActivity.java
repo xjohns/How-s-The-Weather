@@ -64,12 +64,18 @@ public class ChooseAreaActivity extends Activity {
      * 当前选中的级别
      */
     private int currentLevel;
+    /**
+     *  是否从WeatherActivity 中跳转过来。
+     */
+    private boolean isFromWeatherActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity", false);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        if (prefs.getBoolean("city_selected", false)) {
+        //  已经选择了城市且不是从WeatherActivity 跳转过来，才会直接跳转到WeatherActivity
+        if (prefs.getBoolean("city_selected", false) && !isFromWeatherActivity) {
             Intent intent = new Intent(this, WeatherActivity.class);
             startActivity(intent);
             finish();
@@ -164,11 +170,10 @@ public class ChooseAreaActivity extends Activity {
     /**
      *  根据传入的代号和类型从服务器上查询省市县数据。
      */
-    private void queryFromServer(String code, final String type) {
+    private void queryFromServer(final String code, final String type) {
         String address;
         if (!TextUtils.isEmpty(code)){
             address = "http://www.weather.com.cn/data/list3/city" + code +".xml";
-
         } else {
             address = "http://www.weather.com.cn/data/list3/city.xml";
         }
@@ -238,6 +243,7 @@ public class ChooseAreaActivity extends Activity {
 
     /**
      * 捕获Back按键，根据当前的级别来判断，此时应该返回市列表、省列表、还是直接退出。
+     * 如果是切换城市跳转过来的，则返回WeatherActivity。
      */
     @Override
     public void onBackPressed() {
@@ -246,6 +252,10 @@ public class ChooseAreaActivity extends Activity {
         } else if (currentLevel == LEVEL_CITY){
             queryProvinces();
         } else {
+            if (isFromWeatherActivity) {
+                Intent intent = new Intent(this, WeatherActivity.class);
+                startActivity(intent);
+            }
             finish();
         }
     }

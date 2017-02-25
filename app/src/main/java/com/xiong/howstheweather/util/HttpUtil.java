@@ -6,11 +6,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 
 /**
  * Created by xiong on 2017/2/22.
- * 与服务器进行交互，获取全国的省市县数据
+ * 与服务器进行交互
  */
 
 public class HttpUtil {
@@ -33,8 +34,7 @@ public class HttpUtil {
                         response.append(line);
                     }
                     if (listener != null){
-                        //回调onFinish方法
-                        listener.onFinish(response.toString());
+                            listener.onFinish(response.toString());
                     }
                 } catch (Exception e) {
                     if (listener != null){
