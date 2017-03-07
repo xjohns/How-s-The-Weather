@@ -178,7 +178,7 @@ public class Utility {
             editor.putString("pm25", pm25);
             editor.putString("suggest", suggest);
             editor.putString("quality", quality);
-            if (MajorPollutants != null){
+            if (MajorPollutants != ""){
                 editor.putString("MajorPollutants", MajorPollutants);
             } else {
                 editor.putString("MajorPollutants", "暂无");
