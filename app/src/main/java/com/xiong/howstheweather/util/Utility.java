@@ -100,21 +100,47 @@ public class Utility {
             e.printStackTrace();
         }
         Element resp = doc.getRootElement();
-        Element weatherElement = (Element) doc.selectSingleNode("//forecast/weather[1]");
         String city = resp.element("city").getTextTrim();
         String updatetime = resp.element("updatetime").getTextTrim();
         String wendu = resp.element("wendu").getTextTrim();
         String shidu = resp.element("shidu").getTextTrim();
-        String date = weatherElement.element("date").getTextTrim();
-        String type = weatherElement.element("day").element("type").getTextTrim();
-        saveWeatherInfo(context, city, weatherCode, updatetime, wendu, shidu, date, type);
-        Log.d("xys", city + wendu);
-    }
-
-    /**
-     *  将服务器返回的所有天气信息存储到SharedPreferences 文件中。
-     */
-    private static void saveWeatherInfo(Context context, String city, String weatherCode, String updatetime, String wendu, String shidu, String date, String type) {
+        String fengxiang = resp.element("fengxiang").getTextTrim();
+        String fengli = resp.element("fengli").getTextTrim();
+        String sunrise = resp.element("sunrise_1").getTextTrim();
+        String sunset = resp.element("sunset_1").getTextTrim();
+        String date;
+        String high;
+        String low;
+        String dayType;
+        String dayFengXiang;
+        String dayFengLi;
+        String nightType;
+        String nightFengXiang;
+        String nightFengLi;
+        //循环赋值，解析并保存天气信息，i代表第i天
+        for (int i = 1; i < 6; i ++){
+            Element weather = (Element) doc.selectSingleNode("//forecast/weather[" + i +"]");
+            date = weather.element("date").getTextTrim();
+            high = weather.element("high").getTextTrim();
+            low = weather.element("low").getTextTrim();
+            dayType = weather.element("day").element("type").getTextTrim();
+            dayFengXiang = weather.element("day").element("fengxiang").getTextTrim();
+            dayFengLi = weather.element("day").element("fengli").getTextTrim();
+            nightType = weather.element("night").element("type").getTextTrim();
+            nightFengXiang = weather.element("night").element("fengxiang").getTextTrim();
+            nightFengLi = weather.element("night").element("fengli").getTextTrim();
+            SharedPreferences.Editor editor = context.getSharedPreferences("weather" + i, Context.MODE_PRIVATE).edit();
+            editor.putString("date", date);
+            editor.putString("high", high);
+            editor.putString("low", low);
+            editor.putString("dayType", dayType);
+            editor.putString("dayFengXiang", dayFengXiang);
+            editor.putString("dayFengLi", dayFengLi);
+            editor.putString("nightType", nightType);
+            editor.putString("nightFengXiang", nightFengXiang);
+            editor.putString("nightFengLi", nightFengLi);
+            editor.commit();
+        }
         SharedPreferences.Editor editor = context.getSharedPreferences("weather_info", Context.MODE_PRIVATE).edit();
         editor.putBoolean("city_selected", true);
         editor.putString("city_name", city);
@@ -122,12 +148,51 @@ public class Utility {
         editor.putString("updatetime", updatetime);
         editor.putString("wendu", wendu);
         editor.putString("shidu", shidu);
-        editor.putString("date", date);
-        editor.putString("type", type);
-        Log.d("xys", city);
-        Log.d("xys", weatherCode);
+        editor.putString("fengxiang", fengxiang);
+        editor.putString("fengli", fengli);
+        editor.putString("sunrise", sunrise);
+        editor.putString("sunset", sunset);
+        if (resp.element("alarm") != null){
+            String alarmText = resp.element("alarm").element("alarmText").getTextTrim();
+            String alarm_details = resp.element("alarm").element("alarm_details").getTextTrim();
+            editor.putBoolean("haveAlarm", true);
+            editor.putString("alarmText", alarmText);
+            editor.putString("alarm_details", alarm_details);
+        } else {
+            editor.putBoolean("haveAlarm", false);
+        }
+        if (resp.element("environment") != null){
+            String aqi = resp.element("environment").element("aqi").getTextTrim();
+            String pm25 = resp.element("environment").element("pm25").getTextTrim();
+            String suggest = resp.element("environment").element("suggest").getTextTrim();
+            String quality = resp.element("environment").element("quality").getTextTrim();
+            String MajorPollutants = resp.element("environment").element("MajorPollutants").getTextTrim();
+            String o3 = resp.element("environment").element("o3").getTextTrim();
+            String co = resp.element("environment").element("co").getTextTrim();
+            String pm10 = resp.element("environment").element("pm10").getTextTrim();
+            String so2 = resp.element("environment").element("so2").getTextTrim();
+            String no2 = resp.element("environment").element("no2").getTextTrim();
+            String time = resp.element("environment").element("time").getTextTrim();
+            editor.putBoolean("haveEnvironment", true);
+            editor.putString("aqi", aqi);
+            editor.putString("pm25", pm25);
+            editor.putString("suggest", suggest);
+            editor.putString("quality", quality);
+            if (MajorPollutants != null){
+                editor.putString("MajorPollutants", MajorPollutants);
+            } else {
+                editor.putString("MajorPollutants", "暂无");
+            }
+            editor.putString("o3", o3);
+            editor.putString("co", co);
+            editor.putString("pm10", pm10);
+            editor.putString("so2", so2);
+            editor.putString("no2", no2);
+            editor.putString("time", time);
+        } else {
+            editor.putBoolean("haveEnvironment", false);
+        }
         editor.commit();
     }
-
 }
 

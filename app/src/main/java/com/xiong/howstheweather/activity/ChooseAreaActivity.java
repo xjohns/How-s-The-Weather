@@ -5,9 +5,9 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -73,7 +73,7 @@ public class ChooseAreaActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity", false);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences prefs = getSharedPreferences("weather_info", MODE_PRIVATE);
         //  已经选择了城市且不是从WeatherActivity 跳转过来，才会直接跳转到WeatherActivity
         if (prefs.getBoolean("city_selected", false) && !isFromWeatherActivity) {
             Intent intent = new Intent(this, WeatherActivity.class);
@@ -226,7 +226,7 @@ public class ChooseAreaActivity extends Activity {
     private void showProgressDialog() {
         if (progressDialog == null){
             progressDialog = new ProgressDialog(this);
-            progressDialog.setMessage("正在加载中，请稍后。。");
+            progressDialog.setMessage("正在加载中，请稍后。。。");
             progressDialog.setCanceledOnTouchOutside(false);//设置是否在触摸非对话框区域时取消对话框。
         }
         progressDialog.show();
